@@ -13,8 +13,9 @@ time_correlation_MMA <- function(path_aeronet,path_modis){
   # Open AERONET data
   data_aeronet <- read.csv(path_aeronet, header=TRUE, sep=",", dec=".", na.strings = "NA", stringsAsFactors = FALSE)
   # Date formats
-  data_aeronet$date <- as.POSIXct(strptime(data_aeronet$timestamp, format = "%Y-%m-%d %H:%M", "GMT"))
-  # Open modis data
+  #data_aeronet$date <- as.POSIXct(strptime(data_aeronet$timestamp, format = "%Y-%m-%d %H:%M", "GMT"))
+  data_aeronet$date <- as.POSIXct(strptime(data_aeronet$timestamp, format = "%Y%j%H%M", "GMT"))
+   # Open modis data
   data_sat <- read.csv(path_modis, header=TRUE, sep=",",dec=".", stringsAsFactors = FALSE, na.strings = "NA")
   
   
@@ -88,6 +89,7 @@ time_correlation_MMA <- function(path_aeronet,path_modis){
       
     }
   }
+  
   return(AOD)
 }
 
@@ -95,13 +97,22 @@ time_correlation_MMA <- function(path_aeronet,path_modis){
 ######     -------  EXAMPLE for one station     -------  ######
 
 
-
+#C6.0
 data_modis_BA <- "D:/Josefina/papers_escritos/paper_maiac/datasets/processed/BA-25KM-MODIS-60-AER.csv"
 data_aeronet_BA <-"D:/Josefina/papers_escritos/paper_maiac/datasets/processed/BA-25KM-MAIAC-60-AER.csv"
 combinate_BA <- time_correlation_MMA (path_aeronet=data_aeronet_BA,path_modis=data_modis_BA)
 # Save the file with co-located data from AERONET and modis on local path
 write.csv (combinate_BA,"D:/Josefina/papers_escritos/paper_maiac/datasets/processed/MMA/BA-25KM-MM-60-AER.csv")
 
+#C6.1, Daily mean C6.1
+data_modis_BA <- "D:/Josefina/paper_git/paper_maiac/datasets/processed/MODIS/MODIS_dia/BA-25KM-MODIS-60-AER-DIA.csv.csv"
+data_aeronet_BA <-"D:/Josefina/paper_git/paper_maiac/datasets/processed/C6.1/dia/3_BA-25KM-MAIAC-60-AER_MEAN.csv"
+combinate_BA <- time_correlation_MMA (path_aeronet=data_aeronet_BA,path_modis=data_modis_BA)
+# Save the file with co-located data from AERONET and modis on local path
+write.csv (combinate_BA,"D:/Josefina/paper_git/paper_maiac/datasets/processed/MMA/BA-25KM-MM-60-AER.csv")
+
+
+#-----------------------------------------------------------
 # SP
 data_modis_SP <- "D:/Josefina/papers_escritos/paper_maiac/datasets//processed/SP-25KM-MODIS-60-AER.csv"
 data_aeronet_SP <-"D:/Josefina/papers_escritos/paper_maiac/datasets/processed/SP-25KM-MAIAC-60-AER.csv"
