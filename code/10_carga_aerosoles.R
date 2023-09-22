@@ -30,10 +30,10 @@ for (i in 1: length(id)){
   #La clasificacion es segun AOD AERONET
   data_02 <- data[data$AOD_550_AER_mean <= 0.2, ]
   data_04 <- data[data$AOD_550_AER_mean > 0.2 & data$AOD_550_AER_mean <= 0.4, ]
-  data_06 <- data[data$AOD_550_AER_mean > 0.6, ]
+  data_06 <- data[data$AOD_550_AER_mean > 0.4, ]
   
   # Si solo una observacion ponemos NA en todo el df
-  if (nrow(data_02) <= 1){
+  if (nrow(data_02) <= 2){
     data_02_estadisticas_modis <- data.frame (mean.modelado = NA,mean.obs = NA, len.obs = nrow(data_02),
                                               len.mod= nrow(data_02), rmse = NA,nrmse.mean = NA,bias=NA,
                                               nbias.mean=NA, r=NA, R.2.aj=NA, sd_mod =NA, sd_obs=NA, crmsd=NA,
@@ -49,7 +49,7 @@ for (i in 1: length(id)){
     
   }
     
-  else if (nrow(data_04) <= 1){
+  else if (nrow(data_04) <= 2){
     data_04_estadisticas_modis <- data.frame (mean.modelado = NA,mean.obs = NA, len.obs = nrow(data_04),
                                               len.mod= nrow(data_04), rmse = NA,nrmse.mean = NA,bias=NA,
                                               nbias.mean=NA, r=NA, R.2.aj=NA, sd_mod =NA, sd_obs=NA, crmsd=NA,
@@ -65,7 +65,7 @@ for (i in 1: length(id)){
     
   }
   
-  else if (nrow(data_06) <= 1){
+  else if (nrow(data_06) <= 2){
     data_06_estadisticas_modis <- data.frame (mean.modelado = NA,mean.obs = NA, len.obs = nrow(data_06),
                                               len.mod= nrow(data_06), rmse = NA,nrmse.mean = NA,bias=NA,
                                               nbias.mean=NA, r=NA, R.2.aj=NA, sd_mod =NA, sd_obs=NA, crmsd=NA,
@@ -123,7 +123,7 @@ for (i in 1: length(id)){
 
 
 # Guardamos csv para visualizarlo mejor
-write.csv(df_rbind,"D:/Josefina/paper_git/paper_maiac/plot/estadisticas/estadisticas_M6M61-MOD-AER-carga2.csv")
+write.csv(df_rbind,"D:/Josefina/paper_git/paper_maiac/plot/estadisticas/estadisticas_M6M61-MOD-AER-carga.csv")
 
 
 
