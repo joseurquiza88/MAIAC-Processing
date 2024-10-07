@@ -172,3 +172,93 @@ funcion_estaditicas <- function(m,o, type){
     return(df)
   }
 }
+
+###########################################################################
+# Con esta funcion recorremos y obtenemos las estadisticas de todas las carpetas
+
+
+funcion_estadisticas_carpeta <- function(dire){
+  setwd(dire)
+  id <- dir(dire, pattern = ".csv")
+  df <- data.frame()
+  for (x in 1:length(id)){
+    print(x)
+    data <- read.csv(id[x])
+    info <- funcion_estaditicas(m=data$AOD_550_maiac,o=data$AOD_550_AER_mean, type="tabla")
+    name <- id[x]
+    df_info <- data.frame(name,info)
+    df <- rbind(df,df_info)
+  }
+  return(df)
+}
+
+dire_1 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C61/tot/1km/"
+dire_3 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C61/tot/3km/"
+dire_5 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C61/tot/5km/"
+dire_15 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C61/tot/15km/"
+dire_25 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C61/tot/25km/"
+
+df_1 <- funcion_estadisticas_carpeta(dire_1)
+df_3 <- funcion_estadisticas_carpeta(dire_3)
+df_5 <- funcion_estadisticas_carpeta(dire_5)
+df_15 <- funcion_estadisticas_carpeta(dire_15)
+df_25 <- funcion_estadisticas_carpeta(dire_25)
+
+df_tot <- rbind(df_1,df_3, df_5, df_15,df_25)
+df_tot$ciudad <- substr(df_tot$name,3,4)
+df_tot$buffer <- substr(df_tot$name,6,9)
+df_tot$temp <-substr(df_tot$name,17,18)
+getwd()
+
+write.csv(df_tot,"D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/USA_C60/tot/estadisticas_BTEMP-ESP-C61.csv")
+########################################
+#Queremos saber cual es el mejor buffer
+# Minimo RMSE, Minimo Bias (abs), Maximo RMSE
+id_df_output <- data.frame()
+df_tot%>%
+  group_by(ciudad) %>%  
+  group_split() -> group_dat_ciudad
+df_rbind <- data.frame()
+#MINIMO - MAX
+for(x in 1:length(group_dat_ciudad)){
+  group_dat_ciudad[[x]][["name"]]
+  minimo_rmse <- min(group_dat_ciudad[[x]][["rmse"]])
+  minimo_bias <- min(abs(group_dat_ciudad[[x]][["bias"]]))
+  
+  maximo_r2 <- max(group_dat_ciudad[[x]][["R.2.aj"]])
+  
+  pos_rmse <- which.min(group_dat_ciudad[[x]][["rmse"]])
+  pos_bias <- which.min(abs(group_dat_ciudad[[x]][["bias"]]))
+  pos_r2 <- which.min(group_dat_ciudad[[x]][["R.2.aj"]])
+  name_rmse <- group_dat_ciudad[[x]][["name"]][[pos_rmse]]
+  name_bias <- group_dat_ciudad[[x]][["name"]][[pos_bias]]
+  name_r2 <- group_dat_ciudad[[x]][["name"]][[pos_r2]]
+  valor_min_bias <- group_dat_ciudad[[x]][["bias"]][[pos_bias]]
+  df <- data.frame (name_rmse,minimo_rmse,valor_min_bias,name_bias,name_r2,maximo_r2,name_r2)
+  
+  df_rbind <- rbind(df_rbind,df)
+}
+df_rbind <- data.frame()
+for(x in 1:length(group_dat_ciudad)){
+  group_dat_ciudad[[x]][["name"]]
+  minimo_rmse <- max(group_dat_ciudad[[x]][["rmse"]])
+  minimo_bias <- max(abs(group_dat_ciudad[[x]][["bias"]]))
+  
+  maximo_r2 <- min(group_dat_ciudad[[x]][["R.2.aj"]])
+  
+  pos_rmse <- which.max(group_dat_ciudad[[x]][["rmse"]])
+  pos_bias <- which.max(abs(group_dat_ciudad[[x]][["bias"]]))
+  pos_r2 <- which.max(group_dat_ciudad[[x]][["R.2.aj"]])
+  name_rmse <- group_dat_ciudad[[x]][["name"]][[pos_rmse]]
+  name_bias <- group_dat_ciudad[[x]][["name"]][[pos_bias]]
+  name_r2 <- group_dat_ciudad[[x]][["name"]][[pos_r2]]
+  valor_min_bias <- group_dat_ciudad[[x]][["bias"]][[pos_bias]]
+  df <- data.frame (name_rmse,minimo_rmse,valor_min_bias,name_bias,name_r2,maximo_r2)
+  
+  df_rbind <- rbind(df_rbind,df)
+}
+
+
+
+write.csv(df_rbind, "D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/Latam_C61/tot/estadisticas_BTEMP-ESP-C613.csv")
+
