@@ -9,16 +9,19 @@ metricas$temporal <- factor(metricas$temporal)
 metricas$espacial <- factor(metricas$espacial)
 unique(metricas$metrica)
 metrica_interes <- "r2"   
-
+metrica_interes <- "r2 promedio espacial"   
 
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-a<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial)) +
-  geom_point(alpha=0.6, fill="black",size=3) +
+#a<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial)) +
+a<- ggplot(metricas_subset, aes(x = estacion, y = valor, color = espacial)) +
+  
+    geom_point(alpha=0.6, fill="black",size=3) +
   scale_color_manual(values = c("#c51b8a","#2ca25f", "#de2d26", "#3182bd","#756bb1")) +  # Personaliza los colores
   scale_shape_manual(values = c(15,16,17,18)) +  # Personaliza las formas (shapes)
   scale_y_continuous(limits=c(0, 1),breaks = c(0,0.2,0.4,0.6,0.8,1))+
+  
   
   #ylim(c(0,1),breaks = c(0,0.1,0.2,0.3))+
   #scale_y_continuous(breaks = c(0,0.1,0.2,0.3)) +
@@ -27,18 +30,23 @@ a<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color
   #ylim(0,0.12)+
   #ylim(-0.05,0.065)+
   #scale_y_continuous(breaks = seq(-1, 1, by = 0.1))+
-  labs(title = "MODIS Latam",
-       x = "Station",
+  labs(#title = "MODIS Latam",
+       x = "Site",
        y = expression(R^2),
        color = "Spatial window",
-       shape = "Temporal window") + theme_bw()+  theme(legend.title = element_text(family = "Roboto",
+       shape = "Temporal window") + theme_classic()+  theme(legend.title = element_text(family = "Roboto",
                                                                                    
                                                                                    size = 14,
                                                                                    face = 2))+
-  theme(legend.text = element_text(size =12))
+  theme(legend.position = "none")  # Elimina la leyenda
+  #theme(legend.text = element_text(size =12))
   #theme_minimal()
-
-
+a
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V04/MAIAC-C61-Latam-R2.png",a,
+       width = 10,
+       height = 8,
+       units = "cm",
+       dpi = 500)
 a
 # b<- ggplot(metricas_subset, aes(x = estacion, y = valor,size = espacial, color =temporal)) +
 #   geom_point(alpha=0.6, fill="black") +
@@ -68,7 +76,7 @@ a
 # 
 # 
 # c
-# d<- # Crea el gráfico de dispersión con ggplot2
+# d<- # Crea el gr?fico de dispersi?n con ggplot2
 #   ggplot(metricas_subset, aes(y = temporal, x = espacial, size = valor, color=estacion)) +
 #   geom_point(shape=1,stroke = 0.2) +
 #   labs(title = metrica_interes,
@@ -79,7 +87,7 @@ a
 # d
 
 
-e<- # Crea el gráfico de dispersión con ggplot2
+e<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, size = temporal, color=estacion)) +
   geom_point(alpha=0.2,shape=c("o","v","s","P","*","h")) +
   scale_color_manual(values = c("#74c476","#fed976","#fb6a4a", "#74a9cf","#df65b0","#807dba")) +  # Personaliza los colores
@@ -104,26 +112,37 @@ e<- # Crea el gráfico de dispersión con ggplot2
 
 e
 
-f<- # Crea el gráfico de dispersión con ggplot2
-  ggplot(metricas_subset, aes(y = valor, x = temporal,  size =espacial,color=estacion )) +
-  geom_point(shape=1,stroke = 0.2) +
-  scale_y_continuous(limits=c(0, 1),breaks = c(0,0.2,0.4,0.6,0.8,1))+
-  #ylim(0,0.12)+
-  #ylim(-0.05,0.065)+
-  #scale_y_continuous(breaks = seq(-1, 1, by = 0.1))+
-  labs(title = "MODIS USA",
+f <- ggplot(metricas_subset, aes(y = valor, x = temporal, size = espacial, color = estacion)) +
+  geom_point(shape = 20, alpha = 0.3, stroke = 0.5) +
+  
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)) +
+  labs(
     x = "Temporal window (min)",
     y = expression(R^2),
     color = "Station",
-    size = "Spatial window") + theme_bw()+
-  theme(legend.title = element_text(#family = "Roboto",
-                                    
-                                    size = 14,
-                                    face = 2))+
-  theme(legend.text = element_text(size =12))
+    size = "Spatial window"
+  ) + 
+  theme_classic() + theme(legend.position = "none")  # Elimina la leyenda
+  # theme(
+  #   legend.title = element_text(size = 14, face = 2),
+  #   legend.text = element_text(size = 12)
+  # ) +
+  # guides(
+  #   color = guide_legend(override.aes = list(size = 5))  # Solo cambia el tamaÃ±o de los sÃ­mbolos en la leyenda de color
+  # )
+
+print(f)
+
 #theme_minimal()
 
 f
+
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V03/MAIAC-C61-Latam-R2-TemporalWindow.png",
+       f,
+       width = 10,
+       height = 8,
+       units = "cm",
+       dpi = 500)
 
 #plot_grid(a, plot_grid(e, f), ncol = 1)
 plot_tot2 <- grid.arrange(e,f,ncol=2)#,heights=c(2,0.7))
@@ -141,35 +160,44 @@ ggsave("D:/Josefina/paper_git/paper_maiac/plot/V02/buff_R02_C61-USA.png",a,width
 ############################################################
 ##                     RMSE
 ############################################################
-
+metrica_interes <- "rmse promedio espacial"  
 metrica_interes <-"rmse" 
 
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
+#rmse<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial))+
 
-rmse<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial))+
+rmse<- ggplot(metricas_subset, aes(x = estacion, y = valor, color = espacial))+
   geom_point(alpha=0.6, fill="black",size=3) +
   scale_color_manual(values = c("#c51b8a","#2ca25f", "#de2d26", "#3182bd","#756bb1")) +  # Personaliza los colores
-  scale_shape_manual(values = c(15,16,17,18)) +  # Personaliza las formas (shapes)
+  #scale_shape_manual(values = c(15,16,17,18)) +  # Personaliza las formas (shapes)
   #scale_y_continuous(limits=c(0, 0.125),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12))+
-  # scale_y_continuous(limits=c(0, 0.29),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,
-  #                                              0.22,0.24,0.26,0.28))+
+  scale_y_continuous(limits=c(0, 0.14),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12,0.14))+#,0.16,0.18,0.2,
+                                        #       0.22,0.24,0.26,0.28))+
   
-  labs(title = "MODIS Latam",
-    x = "Station",
+  labs(#title = "MODIS Latam",
+    x = "Site",
     y = "RMSE",
-    color = "Spatial window",
-    shape = "Temporal window") + theme_bw()+  theme(legend.title = element_text(#family = "Roboto",
+    color = "Spatial window")+
+    #shape = "Temporal window") + 
+  theme_classic()+  theme(legend.title = element_text(family = "Roboto",
                                                                                 
                                                                                 size = 14,
                                                                                 face = 2))+
-  theme(legend.text = element_text(size =12))
+  #theme(legend.position = "none")  # Elimina la leyenda
+theme(legend.text = element_text(size =12))
 #theme_minimal()
 
-
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V04/MAIAC-C61-Latam-RMSE.png",rmse,
+       width = 10,
+       height = 8,
+       units = "cm",
+       dpi = 500)
 rmse
 
-e<- # Crea el gráfico de dispersión con ggplot2
+
+
+e<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, size = temporal, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #scale_y_continuous(limits=c(0, 0.125),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12))+
@@ -191,14 +219,14 @@ e<- # Crea el gráfico de dispersión con ggplot2
 #theme_minimal()
 
 e
-f<- # Crea el gráfico de dispersión con ggplot2
+rmse<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = temporal,  size =espacial,color=estacion )) +
-  geom_point(shape=1,stroke = 0.2) +
+  geom_point(shape=20,alpha=0.3, stroke = 0.2) +
   #scale_y_continuous(limits=c(0, 0.125),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12))+
-  scale_y_continuous(limits=c(0, 0.36),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,
-                                                  0.22,0.24,0.26,0.28,0.3,0.32,0.34,0.36 ))+
+  scale_y_continuous(limits=c(0, 0.14),breaks = c(0,0.02,0.04,0.06,0.08,0.1,0.12,0.14))+#,0.16,0.18,0.2,
+  #       0.22,0.24,0.26,0.28))+
   
-  labs(title = "MODIS USA",
+  labs(#title = "MODIS USA",
        x = "Temporal window (min)",
     y = "RMSE",
     color = "Station",
@@ -207,16 +235,23 @@ f<- # Crea el gráfico de dispersión con ggplot2
                                     
                                     size = 14,
                                     face = 2))+
-  theme(legend.text = element_text(size =12))
-#theme_minimal()
+  theme_classic() + theme(legend.position = "none")  # Elimina la leyenda
+  # theme(
+  #   legend.title = element_text(size = 14, face = 2),
+  #   legend.text = element_text(size = 12)
+  # ) +
+  # guides(
+  #   color = guide_legend(override.aes = list(size = 5))  # Solo cambia el tamaÃ±o de los sÃ­mbolos en la leyenda de color
+  # )
 
 f
 
 #plot_grid(a, plot_grid(e, f), ncol = 1)
 plot_tot2 <- grid.arrange(e,f,ncol=2)#,heights=c(2,0.7))
 #plot_tot3 <- grid.arrange(a,plot_tot2,ncol=1) 
-ggsave("D:/Josefina/paper_git/paper_maiac/plot/V02/buff_RMSE01_C61_USA.png",plot_tot2,width = 30,
-       height = 10,
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V03/MAIAC-C61-Latam-RMSE-TemporalWindow.png",rmse,
+       width = 10,
+       height = 8,
        units = "cm",
        dpi = 500)
 
@@ -232,31 +267,46 @@ ggsave("D:/Josefina/paper_git/paper_maiac/plot/V02/buff_RMSE02_C61_USA.png",rmse
 ############################################################
 
 metrica_interes <-"bias" 
+metrica_interes <-"bias promedio espacial" 
 
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
-
-bias<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial)) +
+#bias<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, color = espacial)) +
+  
+bias<- ggplot(metricas_subset, aes(x = estacion, y = valor,  color = espacial)) +
   geom_point(alpha=0.6, fill="black",size=3) +
   scale_color_manual(values = c("#c51b8a","#2ca25f", "#de2d26", "#3182bd","#756bb1")) +  # Personaliza los colores
   scale_shape_manual(values = c(15,16,17,18)) +  # Personaliza las formas (shapes)
   #scale_y_continuous(limits=c(-0.07, 0.07),breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06))+
   # scale_y_continuous(limits=c(-0.07, 0.18),breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18))+
-  scale_y_continuous(limits=c(-0.07, 0.28),breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,0.22,0.24,0.26,0.28))+
+  scale_y_continuous(limits=c(-0.07, 0.1))+#,breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,0.22,0.24,0.26,0.28))+
+  #
   
-  
-  labs(title = "MAIAC C6.1 USA",
-    x = "Station",
+  labs(#title = "MAIAC C6.1 USA",
+    x = "Site",
     y = "Bias",
-    color = "Spatial window",
-    shape = "Temporal window") + theme_bw()+  theme(legend.title = element_text(#family = "Roboto",
+    color = "Spatial window (km)",
+    shape = "Temporal window") + theme_classic()+  theme(legend.title = element_text(#family = "Roboto",
       
       size = 14,
       face = 2))+
+  #theme(legend.position = "none")
   theme(legend.text = element_text(size =12))
 bias
 
-e<- # Crea el gráfico de dispersión con ggplot2
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V04/MAIAC-C61-Latam-Ref.png",bias,
+       width = 10,
+       height = 8,
+       units = "cm",
+       dpi = 500)
+
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V04/ref.png",bias,
+      width = 10,
+      height = 8,
+      units = "cm",
+      dpi = 500)
+
+e<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, size = temporal, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #scale_y_continuous(limits=c(-0.07, 0.07),breaks = c(-0.06,-0.04,-0.02,0,0.02,0.04,0.06))+
@@ -274,34 +324,46 @@ e<- # Crea el gráfico de dispersión con ggplot2
     face = 2))+
   theme(legend.text = element_text(size = 12))
 e
-f<- # Crea el gráfico de dispersión con ggplot2
+f<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = temporal,  size =espacial,color=estacion )) +
-  geom_point(shape=1,stroke = 0.2) +
+  geom_point(shape=20,alpha=0.3,stroke = 0.2) +
   #scale_y_continuous(limits=c(-0.07, 0.07),breaks = c(-0.06,-0.04,-0.02,0,0.02,0.04,0.06))+
-  scale_y_continuous(limits=c(-0.07, 0.28),breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,0.22,0.24,0.26,0.28))+
+  #scale_y_continuous(limits=c(-0.07, 0.28),breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,0.22,0.24,0.26,0.28))+
+  scale_y_continuous(limits=c(-0.07, 0.1))+#,breaks = c(-0.7,-0.06,-0.04,-0.02,0,0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16,0.18,0.2,0.22,0.24,0.26,0.28))+
   
   
-  labs(title = "MODIS USA",
+  labs(#title = "MODIS USA",
     x = "Temporal window (min)",
     y = "Bias",
     color = "Station",
-    size = "Spatial window") + theme_bw()+
-  theme(legend.title = element_text(#family = "Roboto",
-    
-    size = 14,
-    face = 2))+
-  theme(legend.text = element_text(size =12))
-#theme_minimal()
+    size = "Spatial window (km)") + 
+  # theme(legend.title = element_text(#family = "Roboto",
+  #   
+  #   size = 14,
+  #   face = 2))
+  theme_classic()+
+#theme(legend.position = "none")
+  theme(legend.text = element_text(size =12))+
+  theme(
+    legend.title = element_text(size = 14, face = 2),
+    legend.text = element_text(size = 12)
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(size = 5))  # Solo cambia el tamaÃ±o de los sÃ­mbolos en la leyenda de color
+  )
+
 
 f
 
 #plot_grid(a, plot_grid(e, f), ncol = 1)
 plot_tot2 <- grid.arrange(e,f,ncol=2)#,heights=c(2,0.7))
 #plot_tot3 <- grid.arrange(a,plot_tot2,ncol=1) 
-ggsave("D:/Josefina/paper_git/paper_maiac/plot/V02/buff_Bias01_C61-USA.png",plot_tot2,width = 30,
-       height = 10,
+ggsave("D:/Josefina/paper_git/paper_maiac/plot/V03/MAIAC-C61-Latam-Bias-TemporalWindow_Leyenda.png",f,
+       width = 10,
+       height = 12,
        units = "cm",
        dpi = 500)
+
 
 ggsave("D:/Josefina/paper_git/paper_maiac/plot/V02/buff_Bias02_C61-USA.png",bias,width = 30,
        height = 10,
@@ -363,7 +425,7 @@ reu<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, col
 #theme_minimal()
 reu
 
-e<- # Crea el gráfico de dispersión con ggplot2
+e<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, size = temporal, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   scale_y_continuous(limits=c(0, 140),breaks = c(0,20,40,60,80,100,120,140))+
@@ -382,7 +444,7 @@ e<- # Crea el gráfico de dispersión con ggplot2
 #theme_minimal()
 
 e
-f<- # Crea el gráfico de dispersión con ggplot2
+f<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = temporal,  size =espacial,color=estacion )) +
   geom_point(shape=1,stroke = 0.2) +
   scale_y_continuous(limits=c(0, 140),breaks = c(0,20,40,60,80,100,120,140))+
@@ -440,7 +502,7 @@ nrmse<- ggplot(metricas_subset, aes(x = estacion, y = valor, shape = temporal, c
 #theme_minimal()
 nrmse
 
-e<- # Crea el gráfico de dispersión con ggplot2
+e<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, size = temporal, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   scale_y_continuous(limits=c(0, 1.21),breaks = c(0,0.20,0.40,0.60,0.80,1.00,1.2))+
@@ -459,7 +521,7 @@ e<- # Crea el gráfico de dispersión con ggplot2
 #theme_minimal()
 
 e
-f<- # Crea el gráfico de dispersión con ggplot2
+f<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = temporal,  size =espacial,color=estacion )) +
   geom_point(shape=1,stroke = 0.2) +
   scale_y_continuous(limits=c(0, 1.21),breaks = c(0,0.20,0.40,0.60,0.80,1.00,1.2))+
@@ -504,7 +566,7 @@ metrica_interes <- "r2 promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-R2_latam_60<- # Crea el gráfico de dispersión con ggplot2
+R2_latam_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -536,7 +598,7 @@ metrica_interes <- "r2 promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-R2_latam_61<- # Crea el gráfico de dispersión con ggplot2
+R2_latam_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -571,7 +633,7 @@ metrica_interes <- "r2 promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-R2_USA_61<- # Crea el gráfico de dispersión con ggplot2
+R2_USA_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -606,7 +668,7 @@ metrica_interes <- "r2 promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-R2_USA_60<- # Crea el gráfico de dispersión con ggplot2
+R2_USA_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -641,7 +703,7 @@ metrica_interes <- "rmse promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-rmse_latam_60<- # Crea el gráfico de dispersión con ggplot2
+rmse_latam_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -673,7 +735,7 @@ metrica_interes <- "rmse promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-rmse_latam_61<- # Crea el gráfico de dispersión con ggplot2
+rmse_latam_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -708,7 +770,7 @@ metrica_interes <- "rmse promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-rmse_USA_61<- # Crea el gráfico de dispersión con ggplot2
+rmse_USA_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -743,7 +805,7 @@ metrica_interes <- "rmse promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-rmse_USA_60<- # Crea el gráfico de dispersión con ggplot2
+rmse_USA_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -779,7 +841,7 @@ metrica_interes <- "bias promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-bias_latam_60<- # Crea el gráfico de dispersión con ggplot2
+bias_latam_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -811,7 +873,7 @@ metrica_interes <- "bias promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-bias_latam_61<- # Crea el gráfico de dispersión con ggplot2
+bias_latam_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -846,7 +908,7 @@ metrica_interes <- "bias promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-bias_USA_61<- # Crea el gráfico de dispersión con ggplot2
+bias_USA_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -881,7 +943,7 @@ metrica_interes <- "bias promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-bias_USA_60<- # Crea el gráfico de dispersión con ggplot2
+bias_USA_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -916,7 +978,7 @@ metrica_interes <- "reu promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-reux_latam_60<- # Crea el gráfico de dispersión con ggplot2
+reux_latam_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -948,7 +1010,7 @@ metrica_interes <- "reu promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-reux_latam_61<- # Crea el gráfico de dispersión con ggplot2
+reux_latam_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -983,7 +1045,7 @@ metrica_interes <- "reu promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-reux_USA_61<- # Crea el gráfico de dispersión con ggplot2
+reux_USA_61<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -1018,7 +1080,7 @@ metrica_interes <- "reu promedio espacial"
 #Len 120 6 ciudades * 5 buffer espaciales * 4 buff temporal
 metricas_subset <- metricas[metricas$metrica == metrica_interes,]
 
-reux_USA_60<- # Crea el gráfico de dispersión con ggplot2
+reux_USA_60<- # Crea el gr?fico de dispersi?n con ggplot2
   ggplot(metricas_subset, aes(y = valor, x = espacial, group=estacion, color=estacion)) +
   geom_point(shape=1,stroke = 0.2) +
   #geom_ribbon(metricas_subset,mapping=aes(ymin = min, ymax = max,stroke=1, fill=estacion),alpha = 0.2, linetype = "dotted", size =0.1, show.legend = FALSE)+ # Banda sombreada
@@ -1039,13 +1101,13 @@ reux_USA_60<- # Crea el gráfico de dispersión con ggplot2
 reux_USA_60
 
 ############################################################
-## Definir colores y formas para cada estación
+## Definir colores y formas para cada estaci?n
 colores <- c('#74c476', '#fed976', '#fb6a4a', '#74a9cf', '#df65b0', '#807dba')
 formas <- c(1, 1, 2, 5, 6, 23)
 metricas_subset_r2 <- metricas[metricas$metrica == "r2",]
 
 r2<-ggplot(metricas_subset_r2, aes(y = valor, x = espacial, size = temporal, shape = estacion)) +
-  geom_point(aes(color = estacion),stroke=0.5) +  # Aquí especificamos fill dentro de aes() y también dentro de geom_point()
+  geom_point(aes(color = estacion),stroke=0.5) +  # Aqu? especificamos fill dentro de aes() y tambi?n dentro de geom_point()
   scale_shape_manual(values = formas) +
   scale_color_manual(values = c("#74c476","#fed976","#fb6a4a", "#74a9cf","#df65b0","#807dba")) +  # Personaliza los colores
   labs(x = "Spatial window (km)", y = expression(R^2), fill = "Station", size = "Temporal window") +
@@ -1064,7 +1126,7 @@ r2<-ggplot(metricas_subset_r2, aes(y = valor, x = espacial, size = temporal, sha
 r2
 metricas_subset_rmse <- metricas[metricas$metrica == "rmse",]
 rmse<-ggplot(metricas_subset_rmse, aes(y = valor, x = espacial, size = temporal, shape = estacion)) +
-  geom_point(aes(color = estacion),stroke=0.5) +  # Aquí especificamos fill dentro de aes() y también dentro de geom_point()
+  geom_point(aes(color = estacion),stroke=0.5) +  # Aqu? especificamos fill dentro de aes() y tambi?n dentro de geom_point()
   scale_shape_manual(values = formas) +
   scale_color_manual(values = c("#74c476","#fed976","#fb6a4a", "#74a9cf","#df65b0","#807dba")) +  # Personaliza los colores
   labs(x = "Spatial window (km)", y = "RMSE", fill = "Station", size = "Temporal window") +
@@ -1083,7 +1145,7 @@ rmse
 
 metricas_subset_bias <- metricas[metricas$metrica == "bias",]
 bias<-ggplot(metricas_subset_bias, aes(y = valor, x = espacial, size = temporal, shape = estacion)) +
-  geom_point(aes(color = estacion),stroke=0.5) +  # Aquí especificamos fill dentro de aes() y también dentro de geom_point()
+  geom_point(aes(color = estacion),stroke=0.5) +  # Aqu? especificamos fill dentro de aes() y tambi?n dentro de geom_point()
   scale_shape_manual(values = formas) +
   scale_color_manual(values = c("#74c476","#fed976","#fb6a4a", "#74a9cf","#df65b0","#807dba")) +  # Personaliza los colores
   labs(x = "Spatial window (km)", y = "Bias", fill = "Station", size = "Temporal window") +
@@ -1103,15 +1165,15 @@ metricas_subset_REU <- metricas[metricas$metrica == "reu",]
 
 metricas_subset_REU$Station <- metricas_subset_REU$estacion
 reu<-ggplot(metricas_subset_REU, aes(y = valor, x = espacial, size = temporal, shape = Station)) +
-  geom_point(aes(color = Station),stroke=0.5) +  # Aquí especificamos fill dentro de aes() y también dentro de geom_point()
+  geom_point(aes(color = Station),stroke=0.5) +  # Aqu? especificamos fill dentro de aes() y tambi?n dentro de geom_point()
   scale_shape_manual(values = formas) +
   scale_color_manual(values = c("#74c476","#fed976","#fb6a4a", "#74a9cf","#df65b0","#807dba")) +  # Personaliza los colores
   labs(x = "Spatial window (km)", y = "REU", fill = "Station", size = "Temporal") +
   theme_bw() +scale_y_continuous(limits=c(0,100),breaks = c(0,20,40,60,80,100))+
   
   guides(
-    color = guide_legend(override.aes = list(size = 5)),  # Ajusta el tamaño de los puntos en la leyenda
-    shape = guide_legend(override.aes = list(size = 5))   # Ajusta el tamaño de las formas en la leyenda
+    color = guide_legend(override.aes = list(size = 5)),  # Ajusta el tama?o de los puntos en la leyenda
+    shape = guide_legend(override.aes = list(size = 5))   # Ajusta el tama?o de las formas en la leyenda
   )+
   theme(legend.position = "none", 
         axis.text.y = element_text(size = 19),

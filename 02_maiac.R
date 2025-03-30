@@ -83,20 +83,20 @@ time_correlation <- function(path_aeronet,path_maiac,time_buffer,formato_fecha){
 
 
 ######     -------  EXAMPLE for one station     -------  ######
-
+rm(list = setdiff(ls(), "time_correlation"))
 buffer_time <- 120 #minutes
 buffer_spatial <- "25km"
-city <- "SC"
+city <- "NY"
 # BA
 formato_fecha <- "%d/%m/%Y %H:%M"
-data_maiac_BA <- paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/maiac/Latam_C61/",city,"/prueba_",buffer_spatial,"_",city,"_tot.csv", sep="")
+data_maiac_BA <- paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/maiac/USA_C61/",city,"/prueba_",buffer_spatial,"_",city,"_tot.csv", sep="")
 #data_maiac_BA_60 <- "D:/Josefina/paper_git/paper_maiac/datasets/V02/maiac/Latam_C60/BA/prueba_25km_BA_tot.csv"
-data_maiac <- paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/maiac/Latam_C61/",city,"/prueba_",buffer_spatial,"_",city,"_C61_tot.csv",sep="")
+data_maiac <- paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/maiac/USA_C61/",city,"/prueba_",buffer_spatial,"_",city,"_C61_tot.csv",sep="")
 
 data_aeronet <-"D:/Josefina/paper_git/paper_maiac/datasets/V02/aeronet/datasets_interp_s_L02/USA/7_NY_2015-2022_interp-s_V02_L2.csv"
 combinate_BA <- time_correlation (path_aeronet=data_aeronet,path_maiac=data_maiac,time_buffer=buffer_time,formato_fecha)
 # Save the file with co-located data from AERONET and MAIAC on local path
-write.csv (combinate_BA,paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/Latam_C61/tot/",buffer_spatial,"/7_",city,"-",buffer_spatial,"-MAIAC-",buffer_time,"-AER_C61.csv",sep=""))
+write.csv (combinate_BA,paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/USA_C61/tot/",buffer_spatial,"/7_",city,"-",buffer_spatial,"-MAIAC-",buffer_time,"-AER_C61.csv",sep=""))
 length(combinate_BA$Date_MODIS)
 # BA
 data_maiac_BA <- "D:/Josefina/paper_git/paper_maiac/datasets/maiac/C6.0/BA-25KM-MAIAC.csv"
@@ -264,18 +264,16 @@ promedios <- function(combinate){
   return(rbind_combinate)
   
 }
-
+rm(list = setdiff(ls(), "promedios"))
 buffer_time <- 120 #minutes
 buffer_spatial <- "25km"
-city <- "SC"
+city <- "NY"
 num_estacion <- 7
 # BA
-#SP
 #combinate_SP <- read.csv("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/Latam_C61/tot/1_SP-25KM-MAIAC-60-AER.csv")
-combinate <- read.csv(paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/Latam_C61/tot/",buffer_spatial,"/",num_estacion ,"_",city ,"-",buffer_spatial ,"-MAIAC-",buffer_time ,"-AER_C61.csv",sep=""))
-
+combinate <- read.csv(paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/USA_C61/tot/",buffer_spatial,"/",num_estacion ,"_",city ,"-",buffer_spatial ,"-MAIAC-",buffer_time ,"-AER_C61.csv",sep=""))
 SP_com_promedios <- promedios(combinate)
-write.csv(SP_com_promedios,paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/Latam_C61/dia/",buffer_spatial,"/",num_estacion,"_",city,"-",buffer_spatial,"-MAIAC-",buffer_time,"-AER_MEAN_C61.csv",sep=""))
+write.csv(SP_com_promedios,paste("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/merge_AER-MAIAC/USA_C61/dia/",buffer_spatial,"/",num_estacion,"_",city,"-",buffer_spatial,"-MAIAC-",buffer_time,"-AER_MEAN_C61.csv",sep=""))
 
 #ST
 #combinate_ST <- read.csv("D:/Josefina/paper_git/paper_maiac/datasets/V02/processed/Latam_C61/tot/2_ST-25KM-MAIAC-60-AER.csv")
